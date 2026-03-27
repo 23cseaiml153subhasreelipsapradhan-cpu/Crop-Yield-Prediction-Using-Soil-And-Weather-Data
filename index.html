@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌿 Crop Yield Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <h1>🌾 Crop Yield Prediction Tool</h1>
+
+    <div class="container" style="position: relative;">
+        <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+
+        <form method="POST">
+            <label for="N">Nitrogen (N)</label>
+            <input type="number" step="0.01" name="N" id="N" value="{{ form_data.get('N','') }}" required>
+
+            <label for="P">Phosphorus (P)</label>
+            <input type="number" step="0.01" name="P" id="P" value="{{ form_data.get('P','') }}" required>
+
+            <label for="K">Potassium (K)</label>
+            <input type="number" step="0.01" name="K" id="K" value="{{ form_data.get('K','') }}" required>
+
+            <label for="ph">Soil pH</label>
+            <input type="number" step="0.01" name="ph" id="ph" value="{{ form_data.get('ph','') }}" required>
+
+            <label for="soil">Soil Type</label>
+            <select name="soil" id="soil" required>
+                <option value="">Select Soil</option>
+                <option value="Loamy" {% if form_data.get('soil')=='Loamy' %}selected{% endif %}>Loamy</option>
+                <option value="Clayey" {% if form_data.get('soil')=='Clayey' %}selected{% endif %}>Clayey</option>
+                <option value="Sandy" {% if form_data.get('soil')=='Sandy' %}selected{% endif %}>Sandy</option>
+            </select>
+
+            <label for="climate">Climate Type</label>
+            <select name="climate" id="climate" required>
+                <option value="">Select Climate</option>
+                <option value="Tropical" {% if form_data.get('climate')=='Tropical' %}selected{% endif %}>Tropical</option>
+                <option value="Subtropical" {% if form_data.get('climate')=='Subtropical' %}selected{% endif %}>Subtropical</option>
+                <option value="Temperate" {% if form_data.get('climate')=='Temperate' %}selected{% endif %}>Temperate</option>
+            </select>
+
+            <label for="city">City</label>
+            <input type="text" name="city" id="city" value="{{ form_data.get('city','') }}">
+
+            <button type="submit">Predict Crop</button>
+        </form>
+
+        {% if prediction_text %}
+        <div class="result-box">
+            <h3>{{ prediction_text }}</h3>
+            {% if crop_detail %}
+            <p><strong>Soil:</strong> {{ crop_detail.soil }}</p>
+            <p><strong>Season:</strong> {{ crop_detail.season }}</p>
+            <p><strong>Average Yield:</strong> {{ crop_detail.yield }}</p>
+            {% endif %}
+            <p><strong>Top 3 Predictions:</strong> {{ top3_text | join(', ') }}</p>
+            {% if graph_html %}
+            {{ graph_html | safe }}
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+        <a href="{{ url_for('dashboard') }}">View Prediction History</a>
+    </div>
+</body>
+</html>
